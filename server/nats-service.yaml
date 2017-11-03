@@ -5,7 +5,10 @@ metadata:
   labels:
     app: nats-core-bench
 spec:
-  type: NodePort
+  # expose type for debugging outside of k8s
+  # type: NodePort
+  selector:
+    app: nats-core-bench  
   ports:
   - name: nats-client
     port: 4222
@@ -13,5 +16,3 @@ spec:
   - name: http-monitor
     port: 8222
     targetPort: 8222
-  selector:
-    app: nats-core-bench

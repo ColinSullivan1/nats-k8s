@@ -6,6 +6,8 @@ spec:
   template:
     metadata:
       name: nats-bench-pubsub
+      labels:
+        app: nats-core-bench
     spec:
       containers:
       - name: nats-bench

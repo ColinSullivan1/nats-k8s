@@ -1,13 +1,15 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: nats-bench-sub
+  name: nats-bench-sub-multi
 spec:
   parallelism: 5
   completions: 5
   template:
     metadata:
-      name: nats-bench-sub
+      name: nats-bench-sub-multi
+      labels:
+        app: nats-core-bench
     spec:
       containers:
       - name: nats-bench
