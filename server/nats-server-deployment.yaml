@@ -1,0 +1,21 @@
+apiVersion: apps/v1beta2
+kind: Deployment
+metadata:
+  name: nats-server-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nats-core-bench
+  template: # create pods using pod definition in this template
+    metadata:
+      labels:
+        app: nats-core-bench
+    spec:
+      containers:
+      - name: gnatsd
+        image: nats:latest
+        ports:
+        - containerPort: 4222
+        - containerPort: 8222
+        args: ["-D", "-m", "8222"]

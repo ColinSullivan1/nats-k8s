@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: nats-service
+  labels:
+    app: nats-core-bench
+spec:
+  type: NodePort
+  ports:
+  - name: nats-client
+    port: 4222
+    targetPort: 4222
+  - name: http-monitor
+    port: 8222
+    targetPort: 8222
+  selector:
+    app: nats-core-bench
