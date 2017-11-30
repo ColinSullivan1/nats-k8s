@@ -1,0 +1,43 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{ template "nats-server.fullname" . }}
+  labels:
+    app: {{ template "nats-server.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "nats-server.name" . }}
+        release: {{ .Release.Name }}
+    spec:
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          args: ["-m", "{{ .Values.service.monitorPort }}", "--cluster", "nats://0.0.0.0:{{ .Values.service.clusterPort }}", "--routes", "nats://nats:{{ .Values.service.clusterPort }}", "-D"]
+          ports:
+            - containerPort: {{ .Values.service.monitorPort }}
+              name: monitor
+            - containerPort: {{ .Values.service.clusterPort }}
+              name: cluster
+            - containerPort: {{ .Values.service.clientPort}}
+              name: client
+          livenessProbe:
+            httpGet:
+              path: /
+              port: {{ .Values.service.monitorPort }}
+          readinessProbe:
+            httpGet:
+              path: /
+              port: {{ .Values.service.monitorPort }}
+          resources:
+{{ toYaml .Values.resources | indent 12 }}
+    {{- if .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 8 }}
+    {{- end }}
