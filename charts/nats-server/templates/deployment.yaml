@@ -18,8 +18,15 @@ spec:
       containers:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
-          imagePullPolicy: {{ .Values.image.pullPolicy }}
-          args: ["-m", "{{ .Values.service.monitorPort }}", "--cluster", "nats://0.0.0.0:{{ .Values.service.clusterPort }}", "--routes", "nats://nats:{{ .Values.service.clusterPort }}", "-D"]
+          imagePullPolicy: {{ .Values.image.pullPolicy }}            
+          args: ["-m", "{{ .Values.service.monitorPort }}",
+                 "--cluster", "nats://0.0.0.0:{{ .Values.service.clusterPort }}",
+                 "--routes", "nats://{{ .Values.service.name }}:{{ .Values.service.clusterPort }}",
+{{- if ne "" .Values.username }}
+                 "--user",  "{{ .Values.username }}",
+                 "--pass",  "{{ .Values.password }}",
+{{- end}}
+                 "-D"]
           ports:
             - containerPort: {{ .Values.service.monitorPort }}
               name: monitor
@@ -34,7 +41,7 @@ spec:
           readinessProbe:
             httpGet:
               path: /
-              port: {{ .Values.service.monitorPort }}
+              port: {{ .Values.service.monitorPort }}           
           resources:
 {{ toYaml .Values.resources | indent 12 }}
     {{- if .Values.nodeSelector }}

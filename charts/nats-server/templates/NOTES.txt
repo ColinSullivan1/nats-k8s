@@ -1,8 +1,21 @@
-1.  The internal NATS urls (endpoints) are:
-   Client:     "nats://{{ .Values.service.name }}:{{ .Values.service.clientPort }}"
-   Monitoring: "nats://{{ .Values.service.name }}:{{ .Values.service.monitorPort }}"
+The internal NATS urls (endpoints) are:
 
-NATS will automatically cluster when scaled.  You may see messages as routing is established if debug output is enabled.
+{{- if eq "" .Values.username }}
+Client:     "nats://{{ .Values.service.name }}:{{ .Values.service.clientPort }}"
+Monitoring: "nats://{{ .Values.service.name }}:{{ .Values.service.monitorPort }}"
+WARNING:  No username/password specified.   
+{{- else }}
+Client:     "nats://{{ .Values.username }}:<your password>@{{ .Values.service.name }}:{{ .Values.service.clientPort }}"
+Monitoring: "nats://{{ .Values.service.name }}:{{ .Values.service.monitorPort }}"
+  {{- if contains "password" .Values.password }}
+WARNING:  You are using the default password.  It is HIGHLY recommended you change this.  
+  {{- end }}   
+{{- end}}
+
+Ideally you should bcrypt your password using the NATS mkpasswd tool here:
+https://github.com/nats-io/gnatsd/blob/master/util/mkpasswd.go  
+
+NATS servers will automatically cluster as a deployment is scaled.  You may see log messages as routing is established if debug output is enabled.
 
 {{- if contains "NodePort" .Values.service.type }}
   export NODE_PORT=$(kubectl get --namespace {{ .Release.Namespace }} -o jsonpath="{.spec.ports[0].nodePort}" services {{ template "nats-server.fullname" . }})
