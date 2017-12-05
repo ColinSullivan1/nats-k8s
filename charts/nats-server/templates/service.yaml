@@ -8,7 +8,6 @@ metadata:
     chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
-    comms: nats
 spec:
   type: {{ .Values.service.type }}
   ports:
@@ -20,11 +19,7 @@ spec:
       targetPort: {{ default 8222 .Values.service.monitorPort }}
     - name: cluster
       port: 6222
-      targetPort: {{ default 6222 .Values.service.clusterPort }}   
-#    - port: {{ .Values.service.externalPort }}
-#      targetPort: {{ .Values.service.internalPort }}
-#      protocol: TCP
-#      name: {{ .Values.service.name }}
+      targetPort: {{ default 6222 .Values.service.clusterPort }}
   selector:
     app: {{ template "nats-server.name" . }}
     release: {{ .Release.Name }}

@@ -1,19 +1,20 @@
-1. Get the application URL by running these commands:
-{{- if .Values.ingress.enabled }}
-{{- range .Values.ingress.hosts }}
-  http://{{ . }}
-{{- end }}
-{{- else if contains "NodePort" .Values.service.type }}
+1.  The internal NATS urls (endpoints) are:
+   Client:     "nats://{{ .Values.service.name }}:{{ .Values.service.clientPort }}"
+   Monitoring: "nats://{{ .Values.service.name }}:{{ .Values.service.monitorPort }}"
+
+NATS will automatically cluster when scaled.  You may see messages as routing is established if debug output is enabled.
+
+{{- if contains "NodePort" .Values.service.type }}
   export NODE_PORT=$(kubectl get --namespace {{ .Release.Namespace }} -o jsonpath="{.spec.ports[0].nodePort}" services {{ template "nats-server.fullname" . }})
   export NODE_IP=$(kubectl get nodes --namespace {{ .Release.Namespace }} -o jsonpath="{.items[0].status.addresses[0].address}")
-  echo http://$NODE_IP:$NODE_PORT
+  echo nats://$NODE_IP:$NODE_PORT
 {{- else if contains "LoadBalancer" .Values.service.type }}
      NOTE: It may take a few minutes for the LoadBalancer IP to be available.
            You can watch the status of by running 'kubectl get svc -w {{ template "nats-server.fullname" . }}'
-  export SERVICE_IP=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ template "nats-server.fullname" . }} -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
-  echo http://$SERVICE_IP:{{ .Values.service.externalPort }}
+  export SERVICE_IP=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ .Values.service.name }} -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
+  echo nats://$SERVICE_IP:{{ .Values.service.clientPort }}
 {{- else if contains "ClusterIP" .Values.service.type }}
+  To aid in testing you may expose the port of a NATS server, although using a LoadBalancer is recommended.  To do this:
   export POD_NAME=$(kubectl get pods --namespace {{ .Release.Namespace }} -l "app={{ template "nats-server.name" . }},release={{ .Release.Name }}" -o jsonpath="{.items[0].metadata.name}")
-  echo "Visit http://127.0.0.1:8080 to use your application"
-  kubectl port-forward $POD_NAME 8080:{{ .Values.service.internalPort }}
+  kubectl port-forward $POD_NAME 4222:{{ .Values.service.clientPort }}
 {{- end }}

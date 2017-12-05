@@ -13,6 +13,6 @@ spec:
       - name: nats-bench
         imagePullPolicy: IfNotPresent
         image: nats-bench:latest
-        args: ["-s", "nats://$(NATS_SERVICE_SERVICE_HOST):$(NATS_SERVICE_SERVICE_PORT)", "-np", "0", "-ns", "1", "-n", "10000000", "foo"]
+        args: ["-s", "nats://nats:4222", "-np", "0", "-ns", "1", "-n", "10000000", "foo"]
       restartPolicy: Never
   backoffLimit: 4

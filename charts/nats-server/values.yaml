@@ -6,23 +6,12 @@ image:
   repository: nats
   tag: latest
   pullPolicy: IfNotPresent
-  #args: '["-m", "8222", "--cluster", "nats://0.0.0.0:6222", "--routes", "nats://nats:6222", "-D"]'
 service:
   name: nats
   type: ClusterIP
   clientPort: 4222
   monitorPort: 8222
   clusterPort: 6222
-ingress:
-  enabled: false
-  # Used to create an Ingress record.
-  hosts:
-    - nats-server.local
-  tls:
-    # Secrets must be manually created in the namespace.
-    # - secretName: chart-example-tls
-    #   hosts:
-    #     - chart-example.local
 resources: {}
   # We usually recommend not to specify default resources and to leave this as a conscious
   # choice for the user. This also increases chances charts run on environments with little
