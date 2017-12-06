@@ -20,13 +20,18 @@ spec:
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}            
           args: ["-m", "{{ .Values.service.monitorPort }}",
-                 "--cluster", "nats://0.0.0.0:{{ .Values.service.clusterPort }}",
-                 "--routes", "nats://{{ .Values.service.name }}:{{ .Values.service.clusterPort }}",
 {{- if ne "" .Values.username }}
                  "--user",  "{{ .Values.username }}",
-                 "--pass",  "{{ .Values.password }}",
+                 "--pass",  "{{ .Values.password }}", 
 {{- end}}
-                 "-D"]
+{{- if .Values.debug }}
+                 "-D",
+{{- end}}
+{{- if .Values.trace }}
+                 "-V",
+{{- end}}
+                 "--cluster", "nats://0.0.0.0:{{ .Values.service.clusterPort }}",
+                 "--routes", "nats://{{ .Values.service.name }}:{{ .Values.service.clusterPort }}"]
           ports:
             - containerPort: {{ .Values.service.monitorPort }}
               name: monitor

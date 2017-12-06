@@ -1,5 +1,6 @@
-# k8s-nats-experimental
-A place to save off various k8s/nats artifacts in experimental work.
+# k8s-nats
+
+Research into k8s/nats artifacts in some experimental work.  Eventually, this will become part of the nats-io repository and charts checked into Kubernetes.
 
 ## Setup
 
@@ -11,26 +12,70 @@ A place to save off various k8s/nats artifacts in experimental work.
 #### GKE
 TBD
 
-## Create the NATS server deployment and service
+## Charts
 
-`./server/setup.sh`
+### Requirements
 
+To use the charts, [helm](https://github.com/kubernetes/helm) is required.  Follow the installation instructions there.
 
-## Build & install the docker image for the NATS benchmark
+`cd charts`
 
-If using minikube, run `./scripts/use_minikube_docker.sh`
+### Core NATS
+The Core NATS server installation can be installed via:
 
-`./nats-bench/docker/build.sh`
+`helm install nats-server`
 
-## Run benchmarks
+```text
+Colins-MacBook-Pro:charts colinsullivan$ helm list
+NAME          	REVISION	UPDATED                 	STATUS  	CHART            	NAMESPACE
+eponymous-worm	1       	Wed Dec  6 14:51:15 2017	DEPLOYED	nats-server-0.1.0	default  
+```
+
+### NATS Streaming
+
+If you are using NATS streaming, be sure to locally update your dependencies, otherwise installation will fail with the message `Error: found in requirements.yaml, but missing in charts/ directory: nats-server`.
+
+`helm dependency build nats-streaming-server`
+
+From here, you can install nats streamong server:
+
+`helm install nats-streaming-server`
+
+```text
+Colins-MacBook-Pro:charts colinsullivan$ helm list
+NAME       	REVISION	UPDATED                 	STATUS  	CHART                      	NAMESPACE
+yellow-pika	1       	Wed Dec  6 15:20:10 2017	DEPLOYED	nats-streaming-server-0.1.0	default  
+```
+
+At this time, either install core NATS or nats streaming.  
+
+TODO:  allow [dependant install](https://github.com/kubernetes/helm/blob/master/docs/charts.md#tags-and-condition-fields-in-requirementsyaml).
+
+## Example NATS Kubernetes objects
+
+You can create a NATS server deployment and service directly; feel free to modify and use the files in `./example_objects` directory, although charts are recommended.
+
+`./example_objects/setup.sh`
+
+## Testing 
+
+We'll test using the NATS benchmarks.  Change to the root directory of this repository.
+
+## Build & install the docker images
+
+If using minikube, run `. ./scripts/use_minikube_docker.sh`.  Otherwise, setup the appropriate docker repository for your Kubernetes install.
+
+`./images/nats-bench/build.sh`
+`./images/stan-bench/build.sh`
+
+### Run benchmarks
 
 The benchmarks are k8s jobs, run the pub/sub in the correct order.
 
-TODO:  Automate
+From the root directory of this repository:
 
 ```text
-cd nats-bench
-kubectl create -f <benchmark>
+kubectl create -f manual_tests/whatever.yaml
 ```
 
 Example of viewing the logs.

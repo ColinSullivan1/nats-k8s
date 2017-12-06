@@ -1,0 +1,96 @@
+# Default values for nats-streaming-server.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+# NATS Streaming begins 2 instances, one warm FT backup and one 
+# active.  Regardless of the # of replicas, there will only be one
+# active.  This will change when clustering is enabled (Future Item)
+replicaCount: 2
+image:
+  repository: nats-streaming
+  tag: 0.6.0
+  pullPolicy: IfNotPresent
+
+#
+# Streaming server configuration
+#
+
+# Cluster ID (default: test-cluster)
+clusterID: "test-cluster"
+  
+# Connect to this external NATS Server URL
+natsUrl: "nats://username:password@nats-service:4222"
+
+# Name of the FT Group. A group can be 2 or more servers with a single active server and all sharing the same datastore.
+ftGroup: "ft-{{ .Values.streaming.clusterID }}"
+  
+# Max number of channels (0 for unlimited)
+maxChannels: 100
+  
+# Max number of subscriptions per channel (0 for unlimited)
+maxSubs: 1000
+
+# Max number of messages per channel (0 for unlimited)
+maxMsgs: "1000000"
+
+# Max messages total size per channel (0 for unlimited)
+maxBytes:  "900mb"
+
+# Max duration a message can be stored ("0s" for unlimited)
+maxAge: 0
+
+# Configuration file (requires pvc)
+configFile: ""
+
+#
+# ADVANCED:  These normally do not need to be changed.
+#
+# Interval at which server sends heartbeat to a client
+hbInterval: 30s
+# How long server waits for a heartbeat response
+hbTimeout: 10s
+# Number of failed heartbeats before server closes the client connection
+hbFailCount: 330
+# Number of internal subscriptions handling incoming ACKs (0 means one per client's subscription)
+ackSubs: 0
+# Use for general debugging.  Enabling this will negatively affect performance.
+debug: true
+# Do not normally set this as it will drastically decrease performance and generate
+# volumous logs.
+verbose: false
+
+#
+# The streaming service is for monitoring and liveness probes
+#
+service:
+  name: nats-streaming-monitoring
+  type: ClusterIP
+  monitorPort: 8222
+
+persistence:
+  enabled: true
+  ## Persistent Volume Storage Class
+  ## If defined, storageClassName: <storageClass>
+  ## If set to "-", storageClassName: "", which disables dynamic provisioning
+  ## If undefined (the default) or set to null, no storageClassName spec is
+  ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
+  ##   GKE, AWS & OpenStack)
+  ##
+  # storageClass: "-"
+  accessMode: ReadWriteOnce
+  size: 1Gi
+
+  streaming:
+     testParam: "foo"
+
+resources: {}
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  # limits:
+  #  cpu: 100m
+  #  memory: 128Mi
+  # requests:
+  #  cpu: 100m
+  #  memory: 128Mi

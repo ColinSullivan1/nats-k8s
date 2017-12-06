@@ -1,0 +1,72 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{ template "nats-streaming-server.fullname" . }}
+  labels:
+    app: {{ template "nats-streaming-server.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "nats-streaming-server.name" . }}
+        release: {{ .Release.Name }}
+    spec:
+      containers:
+      - name: {{ .Chart.Name }}
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        args: ["-cid", "{{ .Values.clusterID }}",
+               "-m",   "{{ .Values.service.monitorPort }}",
+               "-ns",  "{{ .Values.natsUrl }}",
+               "-mc",  "{{ .Values.maxChannels }}",
+               "-msu", "{{ .Values.maxSubs }}",
+               "-mm",  "{{ .Values.maxMsgs }}",
+               "-mb",  "{{ .Values.maxBytes }}",
+               "-ma",  "{{ .Values.maxAge }}",
+{{- if ne .Values.configFile "" }}               
+               "-sc",  "{{ .Values.configFile }}",
+{{- end }}              
+               "-hbi", "{{ .Values.hbInterval }}",
+               "-hbt", "{{ .Values.hbTimeout }}",
+               "-hbf", "{{ .Values.hbFailCount }}",
+               "--ack_subs", "{{ .Values.ackSubs }}",
+{{- if .Values.persistence.enabled }}
+               "--store", "file",
+               "--dir", "/nats/nss",
+{{- end }}
+{{- if .Values.debug }}
+               "-SD",
+{{- end }}
+{{- if .Values.trace }}
+               "-SV",
+{{- end }}
+               "--ft_group", "ft-{{ .Values.clusterID }}"]         
+        livenessProbe:
+          httpGet:
+            path: /
+            port: {{ .Values.service.monitorPort }}
+        readinessProbe:
+          httpGet:
+            path: /
+            port: {{ .Values.service.monitorPort }}
+        volumeMounts:
+        - name: data
+          mountPath: /nats/nss             
+        resources:
+{{ toYaml .Values.resources | indent 12 }}
+    {{- if .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 8 }}
+    {{- end }}
+      volumes:
+      - name: data
+      {{- if .Values.persistence.enabled }}
+        persistentVolumeClaim:
+          claimName: {{ template "nats-streaming-server.fullname" . }}
+      {{- else }}
+        emptyDir: {}
+      {{- end -}}    

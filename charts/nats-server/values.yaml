@@ -7,15 +7,31 @@ image:
   tag: latest
   pullPolicy: IfNotPresent
 
+# User required for connections
 username: "username"
+
+# Password required for connections
 password: "password"
+
+# Debug output.  Will negatively impact performance.
+debug: false
+
+# Trace output.  Will severely impact performance.
+trace: false
 
 service:
   name: nats-service
   type: ClusterIP
+
+  # Port clients connect on.
   clientPort: 4222
+
+  # Port for the monitoring REST API
   monitorPort: 8222
+
+  # Port for clustering connections
   clusterPort: 6222
+
 resources: {}
   # We usually recommend not to specify default resources and to leave this as a conscious
   # choice for the user. This also increases chances charts run on environments with little
