@@ -1,0 +1,18 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: stan-bench-pubsub
+spec:
+  template:
+    metadata:
+      name: stan-bench-pubsub
+      labels:
+        app: stan-bench
+    spec:
+      containers:
+      - name: stan-bench
+        imagePullPolicy: IfNotPresent
+        image: stan-bench:latest
+        args: ["-s", "nats://username:password@nats-service:4222", "-id", "stan-bench", "-a", "-np", "1", "-ns", "1", "-n", "100000", "foo"]
+      restartPolicy: Never
+  backoffLimit: 4
