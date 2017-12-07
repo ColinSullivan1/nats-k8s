@@ -54,7 +54,7 @@ hbFailCount: 330
 # Number of internal subscriptions handling incoming ACKs (0 means one per client's subscription)
 ackSubs: 0
 # Use for general debugging.  Enabling this will negatively affect performance.
-debug: true
+debug: false
 # Do not normally set this as it will drastically decrease performance and generate
 # volumous logs.
 trace: false
