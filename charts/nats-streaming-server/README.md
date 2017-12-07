@@ -8,6 +8,9 @@ Installs a [NATS](http://nats.io/) streaming server for use with NATS clients.
 $ helm install nats-server
 ```
 
+**NOTE:**  Sometimes the initial pod creation fails due to timing with it's dependencies (Core NATS or the PVC).  This is a known issue,
+Kubernetes will restart the pods and you'll be good to go in a few seconds if this happens.
+
 ## Installing the Chart
 
 To install the chart with the release name `my-release`:
@@ -32,7 +35,7 @@ The command removes all the Kubernetes components associated with the chart and 
 
 ## NATS streaming server scaling
 
-This chart installs **two** NATS streaming servers, one active and the other as a fault tolerant backup.  As the NATS streaming server deployment is scaled, additional servers will act as backups, but ideally you will only need two.
+This chart installs **two** NATS streaming servers, one active and the other as a fault tolerant backup.  As the NATS streaming server deployment is scaled, additional servers will act as backups, although ideally you will only need two.
 
 ### Resources
 
