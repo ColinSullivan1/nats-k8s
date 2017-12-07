@@ -2,7 +2,7 @@
 
 Research into k8s and NATS with some experimental work.  Eventually, charts here will be checked into Kubernetes.
 
-Note that this is a **WORK IN PROGRESS**,; much of what you see here may change, drastically.  Feedback is welcome though.
+Note that this is a **WORK IN PROGRESS**; much of what you see here may change, drastically.  Feedback is welcome though.
 
 ## Setup
 
