@@ -14,7 +14,7 @@ username: "username"
 password: "password"
 
 # Debug output.  Will negatively impact performance.
-debug: false
+debug: true
 
 # Trace output.  Will severely impact performance.
 trace: false

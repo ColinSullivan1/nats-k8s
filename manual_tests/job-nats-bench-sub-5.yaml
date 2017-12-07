@@ -1,11 +1,13 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: nats-bench-pub
+  name: nats-bench-sub-multi
 spec:
+  parallelism: 5
+  completions: 5
   template:
     metadata:
-      name: nats-bench-pub
+      name: nats-bench-sub-multi
       labels:
         app: nats-core-bench
     spec:
@@ -13,6 +15,6 @@ spec:
       - name: nats-bench
         imagePullPolicy: IfNotPresent
         image: nats-bench:latest
-        args: ["-s", "nats://$(NATS_SERVICE_SERVICE_HOST):$(NATS_SERVICE_SERVICE_PORT)", "-np", "1", "-ns", "0", "-n", "10000000", "foo"]
+        args: ["-s", "nats://username:password@nats-service:4222", "-np", "0", "-ns", "1", "-n", "100000", "foo"]
       restartPolicy: Never
   backoffLimit: 4
