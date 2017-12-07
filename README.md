@@ -2,6 +2,8 @@
 
 Research into k8s and NATS with some experimental work.  Eventually, charts here will be checked into Kubernetes.
 
+Note that this is a **WORK IN PROGRESS**,; much of what you see here may change, drastically.  Feedback is welcome though.
+
 ## Setup
 
 ### Launch k8s
@@ -111,14 +113,16 @@ You can create a NATS server deployment and service directly; check out the file
 
 `./example_objects/setup.sh`
 
-
 # TODO
 
 ## Charts
 
-- [ ] Support [conditional install](https://github.com/kubernetes/helm/blob/master/docs/charts.md#tags-and-condition-fields-in-requirementsyaml) of NATS in NATS streaming.
 - [ ] TLS options
-- [ ] Annotations where necessary
+- [ ] Annotations (service, controllers, etc)
 - [ ] Configuration files on a pvc
 - [ ] Do not solicit routes on a single server NATS deployment
-- [ ] Chart READMEs
+- [X] Chart READMEs
+- [ ] LoadBalancerIP value
+- [ ] Add NATS streaming file store parameters
+- [ ] Monitoring (Prometheus)
+- [ ] Support [conditional install](https://github.com/kubernetes/helm/blob/master/docs/charts.md#tags-and-condition-fields-in-requirementsyaml) of NATS in NATS streaming.
