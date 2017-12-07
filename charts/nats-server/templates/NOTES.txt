@@ -18,16 +18,16 @@ https://github.com/nats-io/gnatsd/blob/master/util/mkpasswd.go
 NATS servers will automatically cluster as a deployment is scaled.  You may see log messages as routing is established if debug output is enabled.
 
 {{- if contains "NodePort" .Values.service.type }}
-  export NODE_PORT=$(kubectl get --namespace {{ .Release.Namespace }} -o jsonpath="{.spec.ports[0].nodePort}" services {{ template "nats-server.fullname" . }})
-  export NODE_IP=$(kubectl get nodes --namespace {{ .Release.Namespace }} -o jsonpath="{.items[0].status.addresses[0].address}")
-  echo nats://$NODE_IP:$NODE_PORT
+export NODE_PORT=$(kubectl get --namespace {{ .Release.Namespace }} -o jsonpath="{.spec.ports[0].nodePort}" services {{ template "nats-server.fullname" . }})
+export NODE_IP=$(kubectl get nodes --namespace {{ .Release.Namespace }} -o jsonpath="{.items[0].status.addresses[0].address}")
+echo nats://$NODE_IP:$NODE_PORT
 {{- else if contains "LoadBalancer" .Values.service.type }}
-     NOTE: It may take a few minutes for the LoadBalancer IP to be available.
-           You can watch the status of by running 'kubectl get svc -w {{ template "nats-server.fullname" . }}'
-  export SERVICE_IP=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ .Values.service.name }} -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
-  echo nats://$SERVICE_IP:{{ .Values.service.clientPort }}
+NOTE: It may take a few minutes for the LoadBalancer IP to be available.
+You can watch the status of by running 'kubectl get svc -w {{ template "nats-server.fullname" . }}'
+export SERVICE_IP=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ .Values.service.name }} -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
+echo nats://$SERVICE_IP:{{ .Values.service.clientPort }}
 {{- else if contains "ClusterIP" .Values.service.type }}
-  To aid in testing you may expose the port of a NATS server, although using a LoadBalancer is recommended.  To do this:
-  export POD_NAME=$(kubectl get pods --namespace {{ .Release.Namespace }} -l "app={{ template "nats-server.name" . }},release={{ .Release.Name }}" -o jsonpath="{.items[0].metadata.name}")
-  kubectl port-forward $POD_NAME 4222:{{ .Values.service.clientPort }}
+To aid in testing you may expose the port of a NATS server, although using a LoadBalancer is recommended.  To do this:
+export POD_NAME=$(kubectl get pods --namespace {{ .Release.Namespace }} -l "app={{ template "nats-server.name" . }},release={{ .Release.Name }}" -o jsonpath="{.items[0].metadata.name}")
+kubectl port-forward $POD_NAME 4222:{{ .Values.service.clientPort }}
 {{- end }}
