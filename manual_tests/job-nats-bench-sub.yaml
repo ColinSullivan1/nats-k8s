@@ -13,6 +13,6 @@ spec:
       - name: nats-bench
         imagePullPolicy: IfNotPresent
         image: nats-bench:latest
-        args: ["-s", "nats://username:password@nats-service:4222", "-np", "0", "-ns", "1", "-n", "100000", "foo"]
+        args: ["-s", "nats://username:password@nats-service:4222", "-np", "0", "-ns", "1", "-n", "1000000", "foo"]
       restartPolicy: Never
   backoffLimit: 4
