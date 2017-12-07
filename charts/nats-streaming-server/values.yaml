@@ -57,7 +57,7 @@ ackSubs: 0
 debug: true
 # Do not normally set this as it will drastically decrease performance and generate
 # volumous logs.
-verbose: false
+trace: false
 
 #
 # The streaming service is for monitoring and liveness probes
@@ -79,9 +79,6 @@ persistence:
   # storageClass: "-"
   accessMode: ReadWriteOnce
   size: 1Gi
-
-  streaming:
-     testParam: "foo"
 
 resources: {}
   # We usually recommend not to specify default resources and to leave this as a conscious
