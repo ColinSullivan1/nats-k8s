@@ -16,6 +16,8 @@ TBD
 
 ## Charts
 
+There are charts for core NATS and NATS streaming in the `charts` directory.
+
 ### Requirements
 
 To use the charts, [helm](https://github.com/kubernetes/helm) is required.  Follow the installation instructions there.
@@ -53,7 +55,7 @@ At this time, either install core NATS or nats streaming.
 
 ## Manual Testing
 
-There are a few hacky manual tests for sanity checking the NATS server and NATS streaming server installations.  Tests are run a jobs in your Kubernetes cluster.
+There are a few hacky manual tests for sanity checking the NATS server and NATS streaming server installations.  Tests are run as jobs in your Kubernetes cluster.
 
 ### Build & install the docker images
 
@@ -118,6 +120,7 @@ You can create a NATS server deployment and service directly; check out the file
 ## Charts
 
 - [ ] TLS options
+- [ ] Encrypt passwords
 - [ ] Annotations (service, controllers, etc)
 - [ ] Configuration files on a pvc
 - [ ] Do not solicit routes on a single server NATS deployment
