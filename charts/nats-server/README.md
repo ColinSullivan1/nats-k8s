@@ -38,7 +38,7 @@ The default is:
 
 `nats://username:password@nats-service:4222`
 
-Is is *HIGHLY* recommended changing the username and password.
+Is is *HIGHLY* recommended you change the username and password.  A [bcrypted](https://github.com/nats-io/gnatsd#bcrypt) password is recommended.
 
 ### Resources
 
