@@ -79,6 +79,13 @@ persistence:
   # storageClass: "-"
   accessMode: ReadWriteOnce
   size: 1Gi
+  ## Selection Criteria
+  ## Used to select a volume claim by labels
+  #selector:
+  #  matchLabels:
+  #    name: "nats-pv"
+  #  matchExpressions:
+  #    - {key: environment, operator: In, values: [dev]}
 
 resources: {}
   # We usually recommend not to specify default resources and to leave this as a conscious

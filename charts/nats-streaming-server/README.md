@@ -44,31 +44,92 @@ In choosing resources, NATS streaming server can consume much memory.  You'll wa
 
 ## Configuration
 
-| Parameter                                 | Description                         | Default                                           |
-|-------------------------------------------|-------------------------------------|---------------------------------------------------|
-| `replicaCount`                            | # of NATS streaming servers         | 2                                                 |
-| `image.tag`                               | Container image version             | 0.6.0                                             |
-| `image.pullPolicy`                        | Image pull policy                   | IfNotLatest                                       |
-| `clusterID`                               | ID for active and backups           | "test-cluster"                                    |
-| `natsUrl`                                 | External NATS Server URL            | "nats://username:password@nats-service:4222"      |
-| `ftGroup`                                 | Name of the fault tolerant group    | "ft-(specified cluster id)"                       |
-| `maxChannels`                             | Max # of channels                   | 100                                               |
-| `maxSubs`                                 | Max # of subscriptions per channel  | 1000                                              |
-| `maxMsgs`                                 | Max # of messages per channel       | "1000000"                                         |
-| `maxBytes`                                | Max messages total size per channel | 900mb                                             |
-| `maxAge`                                  | Max duration a message can be stored| "0s" (unlimited)                                  |
-| `maxMsgs`                                 | Max # of messages per channel       | 1000000                                           |
-| `maxMsgs`                                 | Max # of messages per channel       | 1000000                                           |
-| `configFile`                              | Configuration File                  | "" (Requires a PVC with a configuration file)     |
-| `hbInterval`                              | Interval server sends hbs to clients| "30s"                                             |
-| `hbTimeout`                               | Duration to wait for a hb response  | "10s"                                             |
-| `ackSubs`                                 | Internal subscription count for acks| 0 (one per client)                                |
-| `debug`                                   | Enable debugging                    | false                                             |
-| `trace`                                   | Enable detailed tracing             | false  (avoid using this)                         |
-| `service.type`                            | ClusterIP, NodePort, LoadBalancer   | ClusterIP                                         |
-| `service.monitorPort`                     | Port to accept monitor requests     | 8222                                              |
-| `resources`                               | Server resource requests and limits | none set                                          |
-| `persistentVolume.enabled`                | Create a volume to store data       | true (false is used with memory mode)             |
-| `persistentVolume.size`                   | Size of persistent volume claim     | 1Gi RW                                            |
-| `persistentVolume.storageClass`           | Type of persistent volume claim     | `nil` (uses alpha storage class annotation)       |
-| `persistentVolume.accessMode`             | ReadWriteOnce                       | [ReadWriteOnce]                                   |
+| Parameter                                 | Description                                      | Default                                           |
+|-------------------------------------------|-------------------------------------             |---------------------------------------------------|
+| `replicaCount`                            | # of NATS streaming servers                      | 2                                                 |
+| `image.tag`                               | Container image version                          | 0.6.0                                             |
+| `image.pullPolicy`                        | Image pull policy                                | IfNotLatest                                       |
+| `clusterID`                               | ID for active and backups                        | "test-cluster"                                    |
+| `natsUrl`                                 | External NATS Server URL                         | "nats://username:password@nats-service:4222"      |
+| `ftGroup`                                 | Name of the fault tolerant group                 | "ft-(specified cluster id)"                       |
+| `maxChannels`                             | Max # of channels                                | 100                                               |
+| `maxSubs`                                 | Max # of subscriptions per channel               | 1000                                              |
+| `maxMsgs`                                 | Max # of messages per channel                    | "1000000"                                         |
+| `maxBytes`                                | Max messages total size per channel              | 900mb                                             |
+| `maxAge`                                  | Max duration a message can be stored             | "0s" (unlimited)                                  |
+| `maxMsgs`                                 | Max # of messages per channel                    | 1000000                                           |
+| `maxMsgs`                                 | Max # of messages per channel                    | 1000000                                           |
+| `configFile`                              | Configuration File                               | "" (Requires a PVC with a configuration file)     |
+| `hbInterval`                              | Interval server sends hbs to clients             | "30s"                                             |
+| `hbTimeout`                               | Duration to wait for a hb response               | "10s"                                             |
+| `ackSubs`                                 | Internal subscription count for acks             | 0 (one per client)                                |
+| `debug`                                   | Enable debugging                                 | false                                             |
+| `trace`                                   | Enable detailed tracing                          | false  (avoid using this)                         |
+| `service.type`                            | ClusterIP, NodePort, LoadBalancer                | ClusterIP                                         |
+| `service.monitorPort`                     | Port to accept monitor requests                  | 8222                                              |
+| `resources`                               | Server resource requests and limits              | none set                                          |
+| `persistent.enabled`                      | Create a volume to store data                    | true (false is used with memory mode)             |
+| `persistent.size`                         | Size of persistent volume claim                  | 1Gi RW                                            |
+| `persistent.storageClass`                 | Type of persistent volume claim                  | `nil` (uses alpha storage class annotation)       |
+| `persistent.accessMode`                   | ReadWriteOnce                                    | [ReadWriteOnce]                                   |
+| `persistent.selector`                     | Selection criteria to select a persistent volume | `nil`                                             |
+
+## Examples
+### AWS EFS
+https://aws.amazon.com/efs/
+
+NATS Streaming can run in a Kubernetes cluster using a NFS persistent volume backed by Amazons EFS service.
+
+#### Create an EFS File System
+Create a new EFS File system in the AWS console; make sure that you create it in the same VPC and subnet(s) as your K8s nodes and that the security groups used will grant your K8s nodes access.
+
+Once the EFS is available make a note of the DNS name from the AWS console; you'll need it to tell K8s where to connect to.
+
+#### Create a Persistent Volume
+You now need to create a NFS Persistent Volume in K8s pointed at your new EFS.
+
+Save the YAML below as *persistentVolume.yaml* substituting in the DNS name of your EFS endpooint from the previous step and then create the Persistent Volume in your cluster with the command `kubectl apply -f persistentVolume.yaml`.
+
+```yaml
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: nats-pv
+  labels:
+    name: nats-pv
+    app: nats
+spec:
+  capacity:
+    storage: 5Gi
+  accessModes:
+    - ReadWriteMany
+  mountOptions:
+    - nfsvers=4.1
+    - rsize=1048576
+    - wsize=1048576
+    - hard
+    - timeo=600
+    - retrans=2
+  nfs:
+    path: "/"
+    server: ${DNS NAME GOES HERE}
+
+``` 
+
+#### NATS Streaming Configuration
+
+Create or edit the values.yaml for your NATS Streaming chart setting the persistence section as it appears below; this will mount the Persistent Volume that you have just created as the NATS data folder.
+
+```yaml
+persistence:
+  enabled: true
+  storageClass: "-"
+  accessMode: ReadWriteMany
+  size: 5Gi
+  selector:
+    matchLabels:
+      name: "nats-pv"
+      app: "nats"
+```
+
+Continue to configure and deploy NATS as documented in the rest of this readme.
