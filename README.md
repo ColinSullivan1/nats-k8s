@@ -16,7 +16,7 @@ TBD
 
 ## Charts
 
-There are charts for core NATS and NATS streaming in the `charts` directory.
+There are charts for [core NATS](charts/nats-server) and [NATS streaming](charts/nats-streaming-server) in the `charts` directory.
 
 ### Requirements
 
