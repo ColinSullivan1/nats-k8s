@@ -39,7 +39,7 @@ This chart installs **two** NATS streaming servers, one active and the other as 
 
 ### Resources
 
-In choosing resources, NATS streaming server can consume much memory.  You'll want to set 
+In choosing resources, NATS streaming server can consume much memory.  You'll want to set resources accordingly.  Also, be sure you have room on the PVC for your server configuration.
 
 
 ## Configuration
