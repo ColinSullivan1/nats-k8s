@@ -70,12 +70,14 @@ If using minikube, run `. ./scripts/use_minikube_docker.sh` to use the local min
 ### NATS
 
 **Single Pub/Sub App**
+
 There is a basic pub/sub test, that sends 10M messages through a single server.
 ```text
 kubectl create -f manual_tests/job-nats-bench-pubsub.yaml 
 ```
 
 **Seperate publisher and subscriber applications**
+
 You can do one pub to one sub.  These may or may not connect to different servers in your cluster.
 
 ```text
@@ -89,6 +91,7 @@ kubectl create -f manual_tests/job-nats-bench-pub.yaml
 ```
 
 **Seperate publisher to many subscriber applications**
+
 For fanout, and to more confidently test the NATS server service, you can run one pub to five subs.
 
 ```text
