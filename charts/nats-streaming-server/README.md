@@ -8,7 +8,7 @@ Installs a [NATS](http://nats.io/) streaming server for use with NATS clients.
 $ helm install nats-server
 ```
 
-**NOTE:**  Sometimes the initial pod creation fails due to timing with it's dependencies (Core NATS or the PVC).  This is a known issue,
+**NOTE:**  Sometimes the initial pod creation fails due to timing with its dependencies (Core NATS or the PVC).  This is a known issue,
 Kubernetes will restart the pods and you'll be good to go in a few seconds if this happens.
 
 ## Installing the Chart
