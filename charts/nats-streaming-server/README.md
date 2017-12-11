@@ -16,7 +16,7 @@ Kubernetes will restart the pods and you'll be good to go in a few seconds if th
 To install the chart with the release name `my-release`:
 
 ```console
-$ helm install --name my-release nats-server
+$ helm install --name my-release nats-streaming-server
 ```
 
 ### Dependencies
