@@ -74,6 +74,27 @@ In choosing resources, NATS streaming server can consume much memory.  You'll wa
 | `persistent.accessMode`                   | ReadWriteOnce                                    | [ReadWriteOnce]                                   |
 | `persistent.selector`                     | Selection criteria to select a persistent volume | `nil`                                             |
 
+### File Specific Persistence Configuration
+
+| Parameter                            | Description                                           | Default                                           |
+|--------------------------------------|-------------------------------------------------------|---------------------------------------------------|
+| `persistent.file.compactFrag`        | File fragmentation % threshold for compaction         | 50                                                |
+| `persistent.file.compactInterval`    | Minimum interval (in seconds) between compactions     | 300                                               |
+| `persistent.file.compactEnabled`     | Enable compaction                                     | true                                              |
+| `persistent.file.compactMinSize`     | Minimum file size for compaction                      | "1048576"  (1MB)                                  |
+| `persistent.file.bufferSize`         | File buffer size (in bytes)                           | "2097152"  (2MB)                                  |
+| `persistent.file.crc`                | Enable file CRC-32 checksum                           | true                                              | 
+| `persistent.file.crcPoly`            | Polynomial for CRC-32 checksum                        | "3988292384" (crc32.IEEE)                         |
+| `persistent.file.sync`               | Enable File.Sync on Flush                             | true                                              |
+| `persistent.file.sliceMaxMsgs`       | Max # of msgs / file slice                            | 0 (unlimited)                                     |
+| `persistent.file.sliceMaxBytes`      | Max file slice size                                   | "67108931" (64MB)                                 |
+| `persistent.file.sliceMaxAge`        | Max file slice duration                               | 0 (unlimited)                                     |
+| `persistent.file.sliceArchiveScript` | Path to archive script                                | 0 (unlimited)                                     |
+| `persistent.file.fdsLimit`           | Max File Descriptor limit (approx)                    | 0 (unlimited)                                     |
+| `persistent.file.parallelRecovery`   | # of channels recovered in parallel at startup        | 1                                                 |
+
+*Note:  sliceMaxMsgs, sliceMaxBytes, and sliceMaxAge are subject to channel limits.*
+
 ## Examples
 ### AWS EFS
 https://aws.amazon.com/efs/
