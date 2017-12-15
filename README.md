@@ -129,6 +129,6 @@ You can create a NATS server deployment and service directly; check out the file
 - [ ] Do not solicit routes on a single server NATS deployment
 - [X] Chart READMEs
 - [ ] LoadBalancerIP value
-- [ ] Add NATS streaming file store parameters
+- [X] Add NATS streaming file store parameters
 - [ ] Monitoring (Prometheus)
 - [ ] Support [conditional install](https://github.com/kubernetes/helm/blob/master/docs/charts.md#tags-and-condition-fields-in-requirementsyaml) of NATS in NATS streaming.
