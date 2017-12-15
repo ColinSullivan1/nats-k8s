@@ -35,7 +35,7 @@ The command removes all the Kubernetes components associated with the chart and 
 
 ## NATS streaming server scaling
 
-This chart installs **two** NATS streaming servers, one active and the other as a fault tolerant backup.  As the NATS streaming server deployment is scaled, additional servers will act as backups, although ideally you will only need two.
+This chart installs **two** NATS Streaming servers, one active and the other as a fault tolerant backup.  As the NATS streaming server deployment is scaled, additional servers will act as backups, although ideally you will only need two.
 
 ### Resources
 
@@ -45,7 +45,7 @@ In choosing resources, NATS streaming server can consume much memory.  You'll wa
 ## Configuration
 
 | Parameter                                 | Description                                      | Default                                           |
-|-------------------------------------------|-------------------------------------             |---------------------------------------------------|
+|-------------------------------------------|--------------------------------------------------|---------------------------------------------------|
 | `replicaCount`                            | # of NATS streaming servers                      | 2                                                 |
 | `image.tag`                               | Container image version                          | 0.6.0                                             |
 | `image.pullPolicy`                        | Image pull policy                                | IfNotLatest                                       |
@@ -58,11 +58,7 @@ In choosing resources, NATS streaming server can consume much memory.  You'll wa
 | `maxBytes`                                | Max messages total size per channel              | 900mb                                             |
 | `maxAge`                                  | Max duration a message can be stored             | "0s" (unlimited)                                  |
 | `maxMsgs`                                 | Max # of messages per channel                    | 1000000                                           |
-| `maxMsgs`                                 | Max # of messages per channel                    | 1000000                                           |
 | `configFile`                              | Configuration File                               | "" (Requires a PVC with a configuration file)     |
-| `hbInterval`                              | Interval server sends hbs to clients             | "30s"                                             |
-| `hbTimeout`                               | Duration to wait for a hb response               | "10s"                                             |
-| `ackSubs`                                 | Internal subscription count for acks             | 0 (one per client)                                |
 | `debug`                                   | Enable debugging                                 | false                                             |
 | `trace`                                   | Enable detailed tracing                          | false  (avoid using this)                         |
 | `service.type`                            | ClusterIP, NodePort, LoadBalancer                | ClusterIP                                         |
@@ -73,6 +69,18 @@ In choosing resources, NATS streaming server can consume much memory.  You'll wa
 | `persistent.storageClass`                 | Type of persistent volume claim                  | `nil` (uses alpha storage class annotation)       |
 | `persistent.accessMode`                   | ReadWriteOnce                                    | [ReadWriteOnce]                                   |
 | `persistent.selector`                     | Selection criteria to select a persistent volume | `nil`                                             |
+
+### File Specific Persistence Configuration
+
+| Parameter                            | Description                                           | Default                                           |
+|--------------------------------------|-------------------------------------------------------|---------------------------------------------------|
+| `persistent.file.compactEnabled`     | Enable compaction                                     | true                                              |
+| `persistent.file.bufferSize`         | File buffer size (in bytes)                           | "2097152"  (2MB)                                  |
+| `persistent.file.crc`                | Enable file CRC-32 checksum                           | true                                              | 
+| `persistent.file.sync`               | Enable File.Sync on Flush                             | true                                              |
+| `persistent.file.fdsLimit`           | Max File Descriptor limit (approx)                    | 0 (unlimited)                                     |
+
+*Additional configuration parameters not typically used may be found in [values.yaml](values.yaml).*
 
 ## Examples
 ### AWS EFS
