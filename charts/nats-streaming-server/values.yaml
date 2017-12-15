@@ -43,16 +43,18 @@ maxAge: 0
 configFile: ""
 
 #
-# ADVANCED:  These normally do not need to be changed.
+# ADVANCED CONFIGURATION:  Change these with caution.
 #
+
 # Interval at which server sends heartbeat to a client
 hbInterval: 30s
+
 # How long server waits for a heartbeat response
 hbTimeout: 10s
+
 # Number of failed heartbeats before server closes the client connection
 hbFailCount: 330
-# Number of internal subscriptions handling incoming ACKs (0 means one per client's subscription)
-ackSubs: 0
+
 # Use for general debugging.  Enabling this will negatively affect performance.
 debug: false
 # Do not normally set this as it will drastically decrease performance and generate
@@ -87,48 +89,44 @@ persistence:
   #  matchExpressions:
   #    - {key: environment, operator: In, values: [dev]}
   
+  ## 
   ## NATS streaming file configuration
+  ##
   file:
-
-    # File fragmentation % threshold for compaction
-    compactFrag: 50
-
-    # Minimum interval (in seconds) between file compactions, 5min
-    compactInterval: 300
 
     #  Enable compaction
     compactEnabled: true
 
-    #  Minimum file size for compaction
-    compactMinSize: "1048576"
-
-    # File buffer size (in bytes)
-    bufferSize: "2097152"
-
     # Enable file CRC-32 checksum
     crc: true
-
-    # Polynomial used to make the table used for CRC-32 checksum (default is crc32.IEEE)
-    crcPoly : "3988292384"
 
     # Enable File.Sync on Flush
     sync: true
 
-    # Maximum number of messages per file slice (subject to channel limits)
-    sliceMaxMsgs: 0
-
-    # Maximum file slice size - including index file (subject to channel limits)  64MB
-    sliceMaxBytes: "67108931"
-
-    # Maximum file slice duration starting when the first message is stored (subject to channel limits)
-    sliceMaxAge: 0
-
-    # Path to script to use if you want to archive a file slice being removed
-    sliceArchiveScript: ""
-
     # Store will try to use no more file descriptors than this given limit
     fdsLimit: 0
 
+    ##
+    ## ADVANCED CONFIGURATION:  Change these with caution.
+    ## 
+    # File buffer size (in bytes)
+    bufferSize: "2097152"
+    # File fragmentation % threshold for compaction
+    compactFrag: 50
+    # Minimum interval (in seconds) between file compactions, 5min
+    compactInterval: 300
+    #  Minimum file size for compaction
+    compactMinSize: "1048576"
+    # Polynomial used to make the table used for CRC-32 checksum (default is crc32.IEEE)
+    crcPoly : "3988292384"
+    # Maximum number of messages per file slice (subject to channel limits)
+    sliceMaxMsgs: 0
+    # Maximum file slice size - including index file (subject to channel limits)  64MB
+    sliceMaxBytes: "67108931"
+    # Maximum file slice duration starting when the first message is stored (subject to channel limits)
+    sliceMaxAge: 0
+    # Path to script to use if you want to archive a file slice being removed
+    sliceArchiveScript: ""
     #  On startup, number of channels that can be recovered in parallel
     parallelRecovery: 1
  

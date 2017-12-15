@@ -33,7 +33,6 @@ spec:
                "-hbi", "{{ .Values.hbInterval }}",
                "-hbt", "{{ .Values.hbTimeout }}",
                "-hbf", "{{ .Values.hbFailCount }}",
-               "--ack_subs", "{{ .Values.ackSubs }}",
 {{- if .Values.persistence.enabled }}
                "--store", "file",
                "--dir", "/nats/nss",
