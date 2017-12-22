@@ -30,6 +30,9 @@ spec:
 {{- if .Values.trace }}
                  "-V",
 {{- end}}
+{{- if .Values.overrideImageConfig }}
+                 "--config", "/config/gnatsd.conf",
+{{- end}}
                  "--cluster", "nats://0.0.0.0:{{ .Values.service.clusterPort }}",
                  "--routes", "nats://{{ .Values.service.name }}:{{ .Values.service.clusterPort }}"]
           ports:
@@ -46,10 +49,21 @@ spec:
           readinessProbe:
             httpGet:
               path: /
-              port: {{ .Values.service.monitorPort }}           
+              port: {{ .Values.service.monitorPort }}
+{{- if .Values.overrideImageConfig }}
+          volumeMounts:
+          - name: {{ .Values.service.name }}-volume
+            mountPath: /config
+{{- end}}
           resources:
 {{ toYaml .Values.resources | indent 12 }}
-    {{- if .Values.nodeSelector }}
+    {{- if .Values.nodeSelector }}   
       nodeSelector:
 {{ toYaml .Values.nodeSelector | indent 8 }}
     {{- end }}
+{{- if .Values.overrideImageConfig }}
+      volumes:
+      - name: {{ .Values.service.name }}-volume
+        configMap:
+          name:  {{ .Values.service.name }}-config
+{{- end}}     

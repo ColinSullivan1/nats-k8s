@@ -6,10 +6,7 @@ Monitoring: "nats://{{ .Values.service.name }}:{{ .Values.service.monitorPort }}
 WARNING:  No username/password specified.   
 {{- else }}
 Client:     "nats://{{ .Values.username }}:<your password>@{{ .Values.service.name }}:{{ .Values.service.clientPort }}"
-Monitoring: "nats://{{ .Values.service.name }}:{{ .Values.service.monitorPort }}"
-  {{- if contains "password" .Values.password }}
-WARNING:  You are using the default password.  It is HIGHLY recommended you change this.  
-  {{- end }}   
+Monitoring: "nats://{{ .Values.service.name }}:{{ .Values.service.monitorPort }}" 
 {{- end}}
 
 Ideally you should bcrypt your password using the NATS mkpasswd tool here:
