@@ -47,7 +47,7 @@ resources: {}
 #
 # The default image configuration can be overridden here, 
 # to override default values.
-overrideImageConfig: true
+overrideImageConfig: false
 
 #
 # Configuration used when the default image is overridden.  It is highly suggested
