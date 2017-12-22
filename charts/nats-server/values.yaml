@@ -8,10 +8,10 @@ image:
   pullPolicy: IfNotPresent
 
 # User required for connections
-username: "username"
+username: ""
 
 # Password required for connections
-password: "password"
+password: ""
 
 # Debug output.  Will negatively impact performance.
 debug: false
@@ -43,3 +43,58 @@ resources: {}
   # requests:
   #  cpu: 100m
   #  memory: 128Mi
+
+#
+# The default image configuration can be overridden here, 
+# to override default values.
+overrideImageConfig: false
+
+#
+# Configuration used when the default image is overridden.  It is highly suggested
+# to avoid to setting ports, interfaces, or routes here.
+#
+configurationFiles:
+  gnatsd.conf: |- 
+
+    ##  For a full reference, 
+    ##  See:  https://nats.io/documentation/server/gnatsd-config
+    ##
+
+    ##
+    ## You can include configuration files on other PVCs, for example shared.
+    ## authorization files.
+
+    # include "/mypvc/users.conf"
+    
+    ### override limits
+    # max_payload = 10240k 
+    # max_connections = 10
+    # write_deadline = 5s
+
+    # set your authorization scheme for connections and routes here.
+    authorization {
+      # override the default authorization timeout, setup lists of users, etc.
+      timeout: 3
+    }
+
+    # This is for clustering multiple servers together.
+    cluster {
+
+      # Routes are protected, so need to use them with --routes flag
+      # e.g. --routes=nats-route://ruser:T0pS3cr3t@otherdockerhost:6222
+      authorization {
+        # user: ruser
+        # password: T0pS3cr3t
+        timeout: 3.0
+      }
+
+      # reference route certificates as secrets.
+      # tls {
+      #   cert_file:  "/secretsvolume/server.pem"
+      #   key_file:   "/secretsvolume/key.pem"
+      #   timeout:    2
+      # }
+    }
+
+
+
