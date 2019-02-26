@@ -1,5 +1,5 @@
 # Golang binary building stage
-FROM golang:1.9.2
+FROM golang:1.11
 RUN go get -d -v github.com/nats-io/go-nats
 RUN go get -d -v github.com/nats-io/go-nats-streaming
 RUN go get -d -v github.com/golang/protobuf/proto
